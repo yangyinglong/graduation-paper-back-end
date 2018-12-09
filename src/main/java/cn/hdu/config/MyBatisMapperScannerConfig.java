@@ -17,10 +17,10 @@ public class MyBatisMapperScannerConfig {
 
         MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
         mapperScannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactory");
-        mapperScannerConfigurer.setBasePackage("com.leshuibao.fragmentTax.dao.mapper");
+        mapperScannerConfigurer.setBasePackage("cn.hdu.fragmentTax.dao.mapper");
 
         Properties properties = new Properties();
-        properties.setProperty("mappers", "com.leshuibao.config.BaseMapper");
+        properties.setProperty("mappers", "cn.hdu.config.BaseMapper");
         properties.setProperty("notEmpty", "false");
         properties.setProperty("IDENTITY", "MYSQL");
         mapperScannerConfigurer.setProperties(properties);
