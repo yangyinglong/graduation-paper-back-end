@@ -23,13 +23,14 @@ public class AuthorizeView implements IAuthorizeView {
     }
 
     @Override
-    public UserRespDto getUserResp(GUserEntity userEntityRegister) {
+    public UserRespDto getUserRespDto(GUserEntity userEntityRegister) {
         UserRespDto userRespDto = new UserRespDto();
         if (!FormatUtil.isEmpty(userEntityRegister)) {
             userRespDto.setId(userEntityRegister.getId());
             userRespDto.setName(userEntityRegister.getName());
             userRespDto.setPhone(userEntityRegister.getPhone());
             userRespDto.setStatus(userEntityRegister.getStatus());
+            userRespDto.seteMail(userEntityRegister.getEmail());
             return userRespDto;
         }
         return null;

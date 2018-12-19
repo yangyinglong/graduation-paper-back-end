@@ -7,15 +7,25 @@ public class UserRespDto {
     private String name;
     private Integer status;
     private String phone;
+    private String eMail;
 
     public UserRespDto() {
     }
 
-    public UserRespDto(String id, String name, Integer status, String phone) {
+    public UserRespDto(String id, String name, Integer status, String phone, String eMail) {
         this.id = id;
         this.name = name;
         this.status = status;
         this.phone = phone;
+        this.eMail = eMail;
+    }
+
+    public String geteMail() {
+        return eMail;
+    }
+
+    public void seteMail(String eMail) {
+        this.eMail = eMail;
     }
 
     public String getId() {

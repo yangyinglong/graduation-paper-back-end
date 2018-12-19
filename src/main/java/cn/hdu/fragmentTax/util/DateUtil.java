@@ -217,8 +217,22 @@ public class DateUtil {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());  // new Date()为获取当前系统时间
     }
 
-    public static void main(String[] args) {
-        String data = Long.toString(System.currentTimeMillis());
+    /**
+     *
+     */
+    public static String getChinaDateTime(String UTCString) throws ParseException {
+        if (UTCString.indexOf("Z") == -1) {
+            return UTCString;
+        }
+        UTCString = UTCString.replace("Z", " UTC");
+        SimpleDateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");
+        SimpleDateFormat defaultFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = utcFormat.parse(UTCString);
+        return defaultFormat.format(date);
+    }
+
+    public static void main(String[] args) throws ParseException {
+        String data = getChinaDateTime("2018-12-04T16:00:00.000Z");
         System.out.println(data);
     }
 }

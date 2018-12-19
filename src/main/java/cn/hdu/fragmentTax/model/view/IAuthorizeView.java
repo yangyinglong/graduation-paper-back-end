@@ -7,5 +7,5 @@ import cn.hdu.fragmentTax.dto.response.UserRespDto;
 public interface IAuthorizeView {
     GUserEntity getUserEntity(RegisterRestDto registerRestDto);
 
-    UserRespDto getUserResp(GUserEntity userEntityRegister);
+    UserRespDto getUserRespDto(GUserEntity userEntityRegister);
 }

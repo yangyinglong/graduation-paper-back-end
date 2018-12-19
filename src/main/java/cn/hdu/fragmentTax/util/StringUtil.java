@@ -15,7 +15,7 @@ public class StringUtil {
     }
 
     public static void main(String[] args) {
-        String str = getRandomString(6);
+        String str = getRandomString(15);
         System.out.println(str);
     }
 

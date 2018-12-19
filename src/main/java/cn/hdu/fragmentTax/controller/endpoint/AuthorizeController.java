@@ -2,8 +2,11 @@ package cn.hdu.fragmentTax.controller.endpoint;
 
 
 import cn.hdu.fragmentTax.dao.entity.GUserEntity;
+import cn.hdu.fragmentTax.dto.request.EditUserRestDto;
+import cn.hdu.fragmentTax.dto.request.ForgotPassRestDto;
 import cn.hdu.fragmentTax.dto.request.LoginRestDto;
 import cn.hdu.fragmentTax.dto.request.RegisterRestDto;
+import cn.hdu.fragmentTax.dto.response.UserRespDto;
 import cn.hdu.fragmentTax.model.logical.IAuthorizeLogical;
 import cn.hdu.fragmentTax.model.view.IAuthorizeView;
 import cn.hdu.fragmentTax.util.FormatUtil;
@@ -42,7 +45,7 @@ public class AuthorizeController {
         }
         if (userEntity.getPassword().equals(loginRestDto.getPassword())){
             resp.put("c", 200);
-            resp.put("r", authorizeView.getUserResp(userEntity));
+            resp.put("r", authorizeView.getUserRespDto(userEntity));
             return resp;
         }
         resp.put("c", 300);
@@ -62,9 +65,48 @@ public class AuthorizeController {
             return resp;
         }
         GUserEntity userEntityRegister = authorizeView.getUserEntity(registerRestDto);
+        //todo 异常捕捉
         authorizeLogical.addUser(userEntityRegister);
         resp.put("c", 200);
-        resp.put("r", authorizeView.getUserResp(userEntityRegister));
+        resp.put("r", authorizeView.getUserRespDto(userEntityRegister));
+        return resp;
+    }
+
+    @Path("/forgotPass")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, Object> forgotPass(ForgotPassRestDto forgotPassRestDto){
+        Map<String, Object> resp = new HashMap<>();
+        GUserEntity userEntity = authorizeLogical.getUserEntity(forgotPassRestDto);
+        if (FormatUtil.isEmpty(userEntity)) {
+            resp.put("c", 400);
+            resp.put("r", "该手机号未注册！");
+            return resp;
+        }
+        UserRespDto userRespDto = authorizeLogical.updatePassword(userEntity, forgotPassRestDto);
+        if (FormatUtil.isEmpty(userRespDto)) {
+            resp.put("c", 300);
+            resp.put("r", "密码修改失败！");
+            return resp;
+        }
+        resp.put("c", 200);
+        resp.put("r", userRespDto);
+        return resp;
+    }
+
+    @Path("/editUser")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, Object> editUser(EditUserRestDto editUserRestDto) {
+        Map<String, Object> resp = new HashMap<>();
+        try {
+            authorizeLogical.editUser(editUserRestDto);
+            resp.put("c", 200);
+            resp.put("r", "修改成功！");
+        } catch (Exception e) {
+            resp.put("c", 300);
+            resp.put("r", "修改失败！");
+        }
         return resp;
     }
 

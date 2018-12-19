@@ -2,6 +2,7 @@ package cn.hdu.fragmentTax.dao.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 
 @Entity
@@ -21,11 +22,15 @@ public class GLaboratoryEntity implements Serializable {
     private String createdTime;
     @Column
     private String changedTime;
+    @Column
+    private String openTim;  // 开放时间
+    @Column
+    private String desc;  // 描述信息
 
     public GLaboratoryEntity() {
     }
 
-    public GLaboratoryEntity(String id, String name, String adress, String adminId, Integer status, String createdTime, String changedTime) {
+    public GLaboratoryEntity(String id, String name, String adress, String adminId, Integer status, String createdTime, String changedTime, String openTim, String desc) {
         this.id = id;
         this.name = name;
         this.adress = adress;
@@ -33,6 +38,8 @@ public class GLaboratoryEntity implements Serializable {
         this.status = status;
         this.createdTime = createdTime;
         this.changedTime = changedTime;
+        this.openTim = openTim;
+        this.desc = desc;
     }
 
     public String getId() {
@@ -89,6 +96,22 @@ public class GLaboratoryEntity implements Serializable {
 
     public void setChangedTime(String changedTime) {
         this.changedTime = changedTime;
+    }
+
+    public String getOpenTim() {
+        return openTim;
+    }
+
+    public void setOpenTim(String openTim) {
+        this.openTim = openTim;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
 }

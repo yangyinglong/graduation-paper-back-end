@@ -1,6 +1,8 @@
 package cn.hdu.fragmentTax.controller.config;
 
 import cn.hdu.fragmentTax.controller.endpoint.AuthorizeController;
+import cn.hdu.fragmentTax.controller.endpoint.LaboratoryHallController;
+import cn.hdu.fragmentTax.controller.endpoint.OrderHallController;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +18,8 @@ public class JerseyConfig extends ResourceConfig {
 
 	public JerseyConfig() {
 		register(AuthorizeController.class);
+		register(LaboratoryHallController.class);
+		register(OrderHallController.class);
 	}
 //
 //	@Bean

@@ -55,4 +55,13 @@ public interface IGUserMapper {
             @Result(property = "changedTime", column = "changed_time")
     })
     GUserEntity queryByPhone(@Param("phone") String phone);
+
+    @Update("UPDATE `g_user` SET password=#{password} WHERE `phone` = #{phone}")
+    void updatePasswordByPhone(@Param("phone") String phone, @Param("password") String password);
+
+    @Update("UPDATE `g_user` SET name=#{name}, phone=#{phone}, email=#{email} WHERE `id` = #{id}")
+    void updateById(@Param("id") String id, @Param("name") String name, @Param("phone") String phone, @Param("email") String eMail);
+
+    @Update("UPDATE `g_user` SET name=#{name}, phone=#{phone}, email=#{email}, password=#{password} WHERE `id` = #{id}")
+    void updatePasswordById(@Param("id") String id, @Param("name") String name, @Param("phone") String phone, @Param("email") String eMail, @Param("password") String password);
 }
