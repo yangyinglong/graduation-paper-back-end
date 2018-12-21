@@ -102,5 +102,6 @@ public interface IGOrderMapper {
     })
     List<GOrderEntity> queryPartByBespeakTime(@Param("labId") String labId, @Param("bespeakStartTime1") String bespeakStartTime1, @Param("bespeakStartTime2") String bespeakStartTime2);
 
-
+    @Update("UPDATE `g_order` SET status = 0 WHERE `id` = #{orderId}")
+    void cancelOrder(@Param("orderId") String orderId);
 }

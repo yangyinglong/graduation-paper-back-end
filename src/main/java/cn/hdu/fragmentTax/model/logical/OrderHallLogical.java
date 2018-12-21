@@ -91,6 +91,11 @@ public class OrderHallLogical implements IOrderHallLogical {
         return orderBespeakRespDtos;
     }
 
+    @Override
+    public void cancelOrder(String orderId) {
+        orderMapper.cancelOrder(orderId);
+    }
+
     // todo 通过enum 改写
     //0-已删除 1-待审核  2-已通过  3-已驳回 4-已完成
     private String[] getIntAuditStatus(String[] auditStatus) {

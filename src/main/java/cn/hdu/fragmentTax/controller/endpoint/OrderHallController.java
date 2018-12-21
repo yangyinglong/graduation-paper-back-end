@@ -111,4 +111,20 @@ public class OrderHallController {
         return resp;
     }
 
+    @Path("/cancelOrder")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, Object> cancelOrder(String orderId) {
+        Map<String, Object> resp = new HashMap<>();
+        try {
+            orderHallLogical.cancelOrder(orderId);
+            resp.put("c", 200);
+            resp.put("r", "已取消预约！");
+        } catch (Exception e) {
+            resp.put("c", 300);
+            resp.put("r", "取消预约失败！");
+        }
+        return resp;
+    }
+
 }

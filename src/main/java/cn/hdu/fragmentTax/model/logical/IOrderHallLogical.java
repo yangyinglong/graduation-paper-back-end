@@ -21,4 +21,6 @@ public interface IOrderHallLogical {
     void editOrder(EditOrderRestDto editOrderRestDto) throws ParseException;
 
     List<OrderBespeakRespDto> getOrderBespeakRespDtos(ShowOrderBespeakRestDto showOrderBespeakRestDto) throws ParseException;
+
+    void cancelOrder(String orderId);
 }
