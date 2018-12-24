@@ -1,23 +1,20 @@
 package cn.hdu.fragmentTax.controller.endpoint;
 
 
-import cn.hdu.fragmentTax.dto.request.AddOrderRestDto;
-import cn.hdu.fragmentTax.dto.request.EditOrderRestDto;
-import cn.hdu.fragmentTax.dto.request.ShowOrderBespeakRestDto;
-import cn.hdu.fragmentTax.dto.request.ShowOrderRestDto;
+import cn.hdu.fragmentTax.dto.request.*;
 import cn.hdu.fragmentTax.dto.response.OrderBespeakRespDto;
 import cn.hdu.fragmentTax.dto.response.OrderRespDto;
 import cn.hdu.fragmentTax.model.logical.IOrderHallLogical;
 import cn.hdu.fragmentTax.model.view.IOrderHallView;
-import org.apache.ibatis.annotations.Param;
+import cn.hdu.fragmentTax.util.FormatUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import javax.mail.Session;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -48,7 +45,45 @@ public class OrderHallController {
             resp.put("c", 300);
             resp.put("r", "提交预约单失败！");
         }
+        // 发送邮件
+        try {
+            SendEmailRestDto sendEmailRestDto = orderHallView.createEmailDtoToAdminForAddOrder(addOrderRestDto);
+            if (FormatUtil.isEmpty(sendEmailRestDto.getTo())) {
+                return resp;
+            }
+            Session session = orderHallView.createSession();
+            orderHallLogical.sendEmail(session, sendEmailRestDto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return  resp;
+    }
+
+    @Path("/editOrder")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, Object> editOrder(EditOrderRestDto editOrderRestDto) {
+        Map<String, Object> resp = new HashMap<>();
+        try {
+            orderHallLogical.editOrder(editOrderRestDto);
+            resp.put("c", 200);
+            resp.put("r", "修改成功，请及时查看审核结果！");
+        } catch (Exception e) {
+            resp.put("c", 300);
+            resp.put("r", "提交失败！");
+        }
+        // 发送邮件
+        try {
+            SendEmailRestDto sendEmailRestDto = orderHallView.createEmailDtoToAdminForEditOrder(editOrderRestDto);
+            if (FormatUtil.isEmpty(sendEmailRestDto.getTo())) {
+                return resp;
+            }
+            Session session = orderHallView.createSession();
+            orderHallLogical.sendEmail(session, sendEmailRestDto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resp;
     }
 
     @Path("/showOrder")
@@ -76,22 +111,6 @@ public class OrderHallController {
         int num = orderHallLogical.getOrderEntitiesNum(showOrderRestDto);
         resp.put("c", 200);
         resp.put("r", num);
-        return resp;
-    }
-
-    @Path("/editOrder")
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    public Map<String, Object> editOrder(EditOrderRestDto editOrderRestDto) {
-        Map<String, Object> resp = new HashMap<>();
-       try {
-           orderHallLogical.editOrder(editOrderRestDto);
-           resp.put("c", 200);
-           resp.put("r", "修改成功，请及时查看审核结果！");
-       } catch (Exception e) {
-           resp.put("c", 300);
-           resp.put("r", "提交失败！");
-       }
         return resp;
     }
 

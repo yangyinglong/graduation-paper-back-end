@@ -45,10 +45,21 @@ public class LaboratoryHallLogical implements ILaboratoryHallLogical {
     public List<LabRespDto> getLaboratoryEntities(ShowLabRestDto showLabRestDto) {
         List<GLaboratoryEntity> laboratoryEntities = null;
         List<LabRespDto> labRespDtos = new ArrayList<LabRespDto>();
-        if (!FormatUtil.isEmpty(showLabRestDto.getLabName())){
-            laboratoryEntities = laboratoryMapper.queryLikeByName(showLabRestDto.getLabName(), (showLabRestDto.getPage()-1)*5);
+        if (!showLabRestDto.getAdminName().equals("%")) {
+            List<GUserEntity> userEntities = userMapper.queryLikeByName(showLabRestDto.getAdminName());
+            if (FormatUtil.isEmpty(userEntities)) {
+                return labRespDtos;
+            }
+            int index = 0;
+            String[] userIds = new String[userEntities.size()];
+            for (GUserEntity userEntity : userEntities) {
+               userIds[index] = userEntity.getId();
+               index ++;
+            }
+            String adminIds = FormatUtil.strings2String(userIds);
+            laboratoryEntities = laboratoryMapper.queryLikeByCriteria2(showLabRestDto.getLabName(), showLabRestDto.getLabAddress(), adminIds, (showLabRestDto.getPage()-1)*5);
         } else {
-            laboratoryEntities = laboratoryMapper.queryPart((showLabRestDto.getPage()-1)*5);
+            laboratoryEntities = laboratoryMapper.queryLikeByCriteria1(showLabRestDto.getLabName(), showLabRestDto.getLabAddress(), (showLabRestDto.getPage() - 1) * 5);
         }
         for (GLaboratoryEntity laboratoryEntity : laboratoryEntities) {
             LabRespDto labRespDto =  new LabRespDto();
@@ -67,11 +78,22 @@ public class LaboratoryHallLogical implements ILaboratoryHallLogical {
 
     @Override
     public int getLaboratoryEntitiesNum(ShowLabRestDto showLabRestDto) {
-        if (!FormatUtil.isEmpty(showLabRestDto.getLabName())) {
-            return laboratoryMapper.queryPartNum(showLabRestDto.getLabName());
-        } else {
-            return laboratoryMapper.queryAllNum();
+
+        if (!showLabRestDto.getAdminName().equals("%")) {
+            List<GUserEntity> userEntities = userMapper.queryLikeByName(showLabRestDto.getAdminName());
+            if (FormatUtil.isEmpty(userEntities)) {
+                return 0;
+            }
+            String[] userIds = new String[userEntities.size()];
+            int index = 0;
+            for (GUserEntity userEntity : userEntities) {
+                userIds[index] = userEntity.getId();
+                index++;
+            }
+            String adminIds = FormatUtil.strings2String(userIds);
+            return laboratoryMapper.queryPartNum2(showLabRestDto.getLabName(), showLabRestDto.getLabAddress(), adminIds);
         }
+        return laboratoryMapper.queryPartNum1(showLabRestDto.getLabName(), showLabRestDto.getLabAddress());
     }
 
     class SortLabByName implements Comparator {

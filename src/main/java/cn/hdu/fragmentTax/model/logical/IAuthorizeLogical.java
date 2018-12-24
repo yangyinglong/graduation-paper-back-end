@@ -1,11 +1,10 @@
 package cn.hdu.fragmentTax.model.logical;
 
 import cn.hdu.fragmentTax.dao.entity.GUserEntity;
-import cn.hdu.fragmentTax.dto.request.EditUserRestDto;
-import cn.hdu.fragmentTax.dto.request.ForgotPassRestDto;
-import cn.hdu.fragmentTax.dto.request.LoginRestDto;
-import cn.hdu.fragmentTax.dto.request.RegisterRestDto;
+import cn.hdu.fragmentTax.dto.request.*;
 import cn.hdu.fragmentTax.dto.response.UserRespDto;
+
+import javax.mail.Session;
 
 public interface IAuthorizeLogical {
     GUserEntity getUserEntity(RegisterRestDto registerRestDto);
@@ -19,4 +18,5 @@ public interface IAuthorizeLogical {
     UserRespDto updatePassword(GUserEntity userEntity, ForgotPassRestDto forgotPassRestDto);
 
     void editUser(EditUserRestDto editUserRestDto);
+    void sendEmail(Session session, SendEmailRestDto sendEmailRestDto) throws Exception;
 }

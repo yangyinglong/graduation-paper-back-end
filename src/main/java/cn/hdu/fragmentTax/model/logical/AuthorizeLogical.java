@@ -2,14 +2,17 @@ package cn.hdu.fragmentTax.model.logical;
 
 import cn.hdu.fragmentTax.dao.entity.GUserEntity;
 import cn.hdu.fragmentTax.dao.mapper.IGUserMapper;
-import cn.hdu.fragmentTax.dto.request.EditUserRestDto;
-import cn.hdu.fragmentTax.dto.request.ForgotPassRestDto;
-import cn.hdu.fragmentTax.dto.request.LoginRestDto;
-import cn.hdu.fragmentTax.dto.request.RegisterRestDto;
+import cn.hdu.fragmentTax.dto.request.*;
 import cn.hdu.fragmentTax.dto.response.UserRespDto;
 import cn.hdu.fragmentTax.util.FormatUtil;
+import cn.hdu.fragmentTax.util.PropertiesUtil;
+import cn.hdu.fragmentTax.util.SendMailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
 
 @Service
 public class AuthorizeLogical implements IAuthorizeLogical{
@@ -83,5 +86,14 @@ public class AuthorizeLogical implements IAuthorizeLogical{
         }
         userMapper.updatePasswordById(editUserRestDto.getId(), editUserRestDto.getName(), editUserRestDto.getPhone(), editUserRestDto.geteMail(), editUserRestDto.getPassword());
         return;
+    }
+
+    @Override
+    public void sendEmail(Session session, SendEmailRestDto sendEmailRestDto) throws Exception {
+        Transport transport = session.getTransport();
+        transport.connect("smtp.163.com", PropertiesUtil.prop("email_user_name"), PropertiesUtil.prop("email_password"));
+        Message message = SendMailUtil.createSimpleMail(session, PropertiesUtil.prop("email_sender"), sendEmailRestDto.getTo(), sendEmailRestDto.getSubject(), sendEmailRestDto.getContent());
+        transport.sendMessage(message, message.getAllRecipients());
+        transport.close();
     }
 }

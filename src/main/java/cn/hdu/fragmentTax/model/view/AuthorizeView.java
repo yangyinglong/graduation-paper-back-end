@@ -6,6 +6,10 @@ import cn.hdu.fragmentTax.dto.response.UserRespDto;
 import cn.hdu.fragmentTax.util.FormatUtil;
 import org.springframework.stereotype.Service;
 
+import javax.mail.Session;
+
+import java.util.Properties;
+
 import static cn.hdu.fragmentTax.util.DateUtil.getCurrentDatetime;
 
 @Service
@@ -35,5 +39,19 @@ public class AuthorizeView implements IAuthorizeView {
         }
         return null;
 
+    }
+
+    @Override
+    public Session createSession() {
+        Properties prop = new Properties();
+        prop.setProperty("mail.host", "smtp.163.com");
+        prop.setProperty("mail.transport.protocol", "smtp");
+        prop.setProperty("mail.smtp.auth", "true");
+        //使用JavaMail发送邮件的5个步骤
+        //1、创建session
+        Session session = Session.getInstance(prop);
+        //开启Session的debug模式，这样就可以查看到程序发送Email的运行状态
+        session.setDebug(false);
+        return session;
     }
 }

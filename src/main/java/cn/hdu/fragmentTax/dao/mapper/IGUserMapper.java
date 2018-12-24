@@ -64,4 +64,17 @@ public interface IGUserMapper {
 
     @Update("UPDATE `g_user` SET name=#{name}, phone=#{phone}, email=#{email}, password=#{password} WHERE `id` = #{id}")
     void updatePasswordById(@Param("id") String id, @Param("name") String name, @Param("phone") String phone, @Param("email") String eMail, @Param("password") String password);
+
+    @Select("SELECT `id`, `name`, `phone`, `email`, `password`, `status`, `created_time`, `changed_time` FROM `g_user` where `name` like #{name}")
+    @Results({
+            @Result(property = "id", column = "id"),
+            @Result(property = "name", column = "name"),
+            @Result(property = "phone", column = "phone"),
+            @Result(property = "email", column = "email"),
+            @Result(property = "password", column = "password"),
+            @Result(property = "status", column = "status"),
+            @Result(property = "createdTime", column = "created_time"),
+            @Result(property = "changedTime", column = "changed_time")
+    })
+    List<GUserEntity> queryLikeByName(@Param("name") String name);
 }

@@ -5,15 +5,16 @@ import cn.hdu.fragmentTax.dao.entity.GOrderEntity;
 import cn.hdu.fragmentTax.dao.mapper.IGLaboratoryMapper;
 import cn.hdu.fragmentTax.dao.mapper.IGOrderMapper;
 import cn.hdu.fragmentTax.dao.mapper.IGUserMapper;
-import cn.hdu.fragmentTax.dto.request.EditOrderRestDto;
-import cn.hdu.fragmentTax.dto.request.ShowOrderBespeakRestDto;
-import cn.hdu.fragmentTax.dto.request.ShowOrderRestDto;
+import cn.hdu.fragmentTax.dto.request.*;
 import cn.hdu.fragmentTax.dto.response.OrderBespeakRespDto;
 import cn.hdu.fragmentTax.dto.response.OrderRespDto;
 import cn.hdu.fragmentTax.util.FormatUtil;
+import cn.hdu.fragmentTax.util.PropertiesUtil;
+import cn.hdu.fragmentTax.util.SendMailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.mail.*;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,6 +95,15 @@ public class OrderHallLogical implements IOrderHallLogical {
     @Override
     public void cancelOrder(String orderId) {
         orderMapper.cancelOrder(orderId);
+    }
+
+    @Override
+    public void sendEmail(Session session, SendEmailRestDto sendEmailRestDto) throws Exception {
+        Transport transport = session.getTransport();
+        transport.connect("smtp.163.com", PropertiesUtil.prop("email_user_name"), PropertiesUtil.prop("email_password"));
+        Message message = SendMailUtil.createSimpleMail(session, PropertiesUtil.prop("email_sender"), sendEmailRestDto.getTo(), sendEmailRestDto.getSubject(), sendEmailRestDto.getContent());
+        transport.sendMessage(message, message.getAllRecipients());
+        transport.close();
     }
 
     // todo 通过enum 改写

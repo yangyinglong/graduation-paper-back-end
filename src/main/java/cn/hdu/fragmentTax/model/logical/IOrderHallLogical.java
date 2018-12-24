@@ -1,13 +1,12 @@
 package cn.hdu.fragmentTax.model.logical;
 
 import cn.hdu.fragmentTax.dao.entity.GOrderEntity;
-import cn.hdu.fragmentTax.dto.request.AddOrderRestDto;
-import cn.hdu.fragmentTax.dto.request.EditOrderRestDto;
-import cn.hdu.fragmentTax.dto.request.ShowOrderBespeakRestDto;
-import cn.hdu.fragmentTax.dto.request.ShowOrderRestDto;
+import cn.hdu.fragmentTax.dto.request.*;
 import cn.hdu.fragmentTax.dto.response.OrderBespeakRespDto;
 import cn.hdu.fragmentTax.dto.response.OrderRespDto;
 
+import javax.mail.MessagingException;
+import javax.mail.Session;
 import java.text.ParseException;
 import java.util.List;
 
@@ -23,4 +22,6 @@ public interface IOrderHallLogical {
     List<OrderBespeakRespDto> getOrderBespeakRespDtos(ShowOrderBespeakRestDto showOrderBespeakRestDto) throws ParseException;
 
     void cancelOrder(String orderId);
+
+    void sendEmail(Session session, SendEmailRestDto sendEmailRestDto) throws Exception;
 }
