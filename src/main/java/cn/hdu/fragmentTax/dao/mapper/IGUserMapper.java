@@ -77,4 +77,7 @@ public interface IGUserMapper {
             @Result(property = "changedTime", column = "changed_time")
     })
     List<GUserEntity> queryLikeByName(@Param("name") String name);
+
+    @Update("UPDATE `g_user` SET status=2 WHERE `id` = #{id}")
+    void updateToAdmin(@Param("id") String id);
 }

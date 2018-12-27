@@ -22,6 +22,8 @@ public class LaboratoryHallView implements ILaboratoryHallView {
         laboratoryEntity.setName(addLabRestDto.getName());
         laboratoryEntity.setAdress(addLabRestDto.getAddress());
         laboratoryEntity.setAdminId(addLabRestDto.getAdminId());
+        laboratoryEntity.setIntr(addLabRestDto.getDesc());
+        laboratoryEntity.setOpenTim(addLabRestDto.getOpenTime());
         laboratoryEntity.setStatus(1);
         laboratoryEntity.setCreatedTime(getCurrentDatetime());
         return laboratoryEntity;

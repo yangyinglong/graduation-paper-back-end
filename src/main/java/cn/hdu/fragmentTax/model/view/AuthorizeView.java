@@ -21,6 +21,7 @@ public class AuthorizeView implements IAuthorizeView {
         userEntity.setName(registerRestDto.getName());
         userEntity.setPassword(registerRestDto.getPassword());
         userEntity.setPhone(registerRestDto.getPhone());
+        userEntity.setEmail(registerRestDto.geteMail());
         userEntity.setStatus(1);
         userEntity.setCreatedTime(getCurrentDatetime());
         return userEntity;
@@ -53,5 +54,18 @@ public class AuthorizeView implements IAuthorizeView {
         //开启Session的debug模式，这样就可以查看到程序发送Email的运行状态
         session.setDebug(false);
         return session;
+    }
+
+    @Override
+    public GUserEntity getAdminEntity(RegisterRestDto registerRestDto) {
+        GUserEntity userEntity = new GUserEntity();
+        userEntity.setId(registerRestDto.getId());
+        userEntity.setName(registerRestDto.getName());
+        userEntity.setPassword(registerRestDto.getPassword());
+        userEntity.setPhone(registerRestDto.getPhone());
+        userEntity.setEmail(registerRestDto.geteMail());
+        userEntity.setStatus(2);
+        userEntity.setCreatedTime(getCurrentDatetime());
+        return userEntity;
     }
 }

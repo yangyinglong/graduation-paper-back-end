@@ -25,12 +25,12 @@ public class GLaboratoryEntity implements Serializable {
     @Column
     private String openTim;  // 开放时间
     @Column
-    private String desc;  // 描述信息
+    private String intr;  // 描述信息
 
     public GLaboratoryEntity() {
     }
 
-    public GLaboratoryEntity(String id, String name, String adress, String adminId, Integer status, String createdTime, String changedTime, String openTim, String desc) {
+    public GLaboratoryEntity(String id, String name, String adress, String adminId, Integer status, String createdTime, String changedTime, String openTim, String intr) {
         this.id = id;
         this.name = name;
         this.adress = adress;
@@ -39,7 +39,7 @@ public class GLaboratoryEntity implements Serializable {
         this.createdTime = createdTime;
         this.changedTime = changedTime;
         this.openTim = openTim;
-        this.desc = desc;
+        this.intr = intr;
     }
 
     public String getId() {
@@ -106,12 +106,12 @@ public class GLaboratoryEntity implements Serializable {
         this.openTim = openTim;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getIntr() {
+        return intr;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setIntr(String intr) {
+        this.intr = intr;
     }
 
 }

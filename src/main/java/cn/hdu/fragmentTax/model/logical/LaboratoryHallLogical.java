@@ -5,6 +5,8 @@ import cn.hdu.fragmentTax.dao.entity.GUserEntity;
 import cn.hdu.fragmentTax.dao.mapper.IGLaboratoryMapper;
 import cn.hdu.fragmentTax.dao.mapper.IGUserMapper;
 import cn.hdu.fragmentTax.dto.request.AddLabRestDto;
+import cn.hdu.fragmentTax.dto.request.AdminShowLabRestDto;
+import cn.hdu.fragmentTax.dto.request.EditLabRestDto;
 import cn.hdu.fragmentTax.dto.request.ShowLabRestDto;
 import cn.hdu.fragmentTax.dto.response.LabRespDto;
 import cn.hdu.fragmentTax.util.FormatUtil;
@@ -69,7 +71,7 @@ public class LaboratoryHallLogical implements ILaboratoryHallLogical {
             labRespDto.setAdminId(laboratoryEntity.getAdminId());
             labRespDto.setAdminName(userMapper.queryByKey(laboratoryEntity.getAdminId()).getName());
             labRespDto.setOpenTime(laboratoryEntity.getOpenTim());
-            labRespDto.setDesc(laboratoryEntity.getDesc());
+            labRespDto.setDesc(laboratoryEntity.getIntr());
             labRespDtos.add(labRespDto);
         }
         Collections.sort(labRespDtos, new SortLabByName());
@@ -96,6 +98,50 @@ public class LaboratoryHallLogical implements ILaboratoryHallLogical {
         return laboratoryMapper.queryPartNum1(showLabRestDto.getLabName(), showLabRestDto.getLabAddress());
     }
 
+    @Override
+    public void cancelLab(String labId) {
+        laboratoryMapper.cancelById(labId);
+    }
+
+    @Override
+    public List<LabRespDto> getAdminLaboratoryEntities(AdminShowLabRestDto adminShowLabRestDto) {
+        String status = FormatUtil.strings2String(getIntAuditStatus(adminShowLabRestDto.getStatus()));
+        List<GLaboratoryEntity> laboratoryEntities = laboratoryMapper.queryPartByAdminId(adminShowLabRestDto.getAdminId(), status, (adminShowLabRestDto.getPage()-1)*5);
+        List<LabRespDto> labRespDtos = new ArrayList<LabRespDto>();
+        for (GLaboratoryEntity laboratoryEntity : laboratoryEntities) {
+            LabRespDto labRespDto =  new LabRespDto();
+            labRespDto.setId(laboratoryEntity.getId());
+            labRespDto.setAddress(laboratoryEntity.getAdress());
+            labRespDto.setName(laboratoryEntity.getName());
+            labRespDto.setAdminId(laboratoryEntity.getAdminId());
+            labRespDto.setAdminName(userMapper.queryByKey(laboratoryEntity.getAdminId()).getName());
+            labRespDto.setStatus(getStrAuditStatus(laboratoryEntity.getStatus()));
+            labRespDto.setOpenTime(laboratoryEntity.getOpenTim());
+            labRespDto.setDesc(laboratoryEntity.getIntr());
+            labRespDtos.add(labRespDto);
+        }
+        Collections.sort(labRespDtos, new SortLabByName());
+        return labRespDtos;
+    }
+
+    @Override
+    public int getAdminLaboratoryEntitiesNum(AdminShowLabRestDto adminShowLabRestDto) {
+        String status = FormatUtil.strings2String(getIntAuditStatus(adminShowLabRestDto.getStatus()));
+        int num = 0;
+        num = laboratoryMapper.queryPartNumByAdminId(adminShowLabRestDto.getAdminId(), status);
+        return num;
+    }
+
+    @Override
+    public void editLaboratory(EditLabRestDto editLabRestDto) {
+        int status = 1;
+        if (editLabRestDto.getOpenStatus().equals("不开放")) {
+            status = 0;
+        }
+        laboratoryMapper.updateLabById(editLabRestDto.getLabId(), editLabRestDto.getLabName(), editLabRestDto.getLabAddress(),
+                editLabRestDto.getLabAdminId(), editLabRestDto.getOpenTime(), editLabRestDto.getDesc(), status);
+    }
+
     class SortLabByName implements Comparator {
         @Override
         public int compare(Object o1, Object o2) {
@@ -103,5 +149,26 @@ public class LaboratoryHallLogical implements ILaboratoryHallLogical {
             LabRespDto labRespDto2 = (LabRespDto)o2;
             return labRespDto1.getName().compareTo(labRespDto2.getName());
         }
+    }
+
+    private String[] getIntAuditStatus(String[] auditStatus) {
+        for (int i = 0; i < auditStatus.length; i++) {
+            if (auditStatus[i].equals("开放")) {
+                auditStatus[i] = "1";
+            } else if (auditStatus[i].equals("不开放")) {
+                auditStatus[i] = "0";
+            }
+        }
+        return auditStatus;
+    }
+
+    private String getStrAuditStatus(Integer auditStatus) {
+        if (auditStatus == 0) {
+            return "不开放";
+        }
+        if (auditStatus == 1) {
+            return "开放";
+        }
+        return "未知";
     }
 }

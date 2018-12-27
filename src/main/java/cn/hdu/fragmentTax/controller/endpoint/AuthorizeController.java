@@ -70,6 +70,26 @@ public class AuthorizeController {
         return resp;
     }
 
+    @Path("/registerAdmin")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, Object> registerAdmin(RegisterRestDto registerRestDto){
+        Map<String, Object> resp = new HashMap<>();
+        GUserEntity userEntity = authorizeLogical.getUserEntity(registerRestDto);
+        if (!FormatUtil.isEmpty(userEntity)){
+            authorizeLogical.updateToAdmin(userEntity);
+            resp.put("c", 201);
+            resp.put("r", authorizeView.getUserRespDto(authorizeView.getAdminEntity(registerRestDto)));
+            return resp;
+        }
+        GUserEntity userEntityRegister = authorizeView.getAdminEntity(registerRestDto);
+        //todo 异常捕捉
+        authorizeLogical.addUser(userEntityRegister);
+        resp.put("c", 200);
+        resp.put("r", authorizeView.getUserRespDto(userEntityRegister));
+        return resp;
+    }
+
     @Path("/forgotPass")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -118,7 +138,6 @@ public class AuthorizeController {
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, Object> sendEmail(SendEmailRestDto sendEmailRestDto){
         Map<String, Object> resp = new HashMap<>();
-
         try {
             Session session = authorizeView.createSession();
             authorizeLogical.sendEmail(session, sendEmailRestDto);

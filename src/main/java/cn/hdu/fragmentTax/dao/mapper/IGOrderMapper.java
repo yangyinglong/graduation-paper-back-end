@@ -104,4 +104,32 @@ public interface IGOrderMapper {
 
     @Update("UPDATE `g_order` SET status = 0 WHERE `id` = #{orderId}")
     void cancelOrder(@Param("orderId") String orderId);
+
+    @Select("SELECT `id`, `user_id`, `user_name`, `laboratory_id`, `laboratory_name`, `laboratory_address`, `bespeak_start_time`, `bespeak_end_time`, `used_to`, `remarks`, `status`, `admin_remarks`, `created_time`, `changed_time` FROM `g_order` where `laboratory_id` in (${labIds}) and `status` in (${status}) order by `created_time` limit #{start}, 5")
+    @Results({
+            @Result(property = "id", column = "id"),
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "userName", column = "user_name"),
+            @Result(property = "laboratoryId", column = "laboratory_id"),
+            @Result(property = "laboratoryName", column = "laboratory_name"),
+            @Result(property = "laboratoryAddress", column = "laboratory_address"),
+            @Result(property = "bespeakStartTime", column = "bespeak_start_time"),
+            @Result(property = "bespeakEndTime", column = "bespeak_end_time"),
+            @Result(property = "usedTo", column = "used_to"),
+            @Result(property = "remarks", column = "remarks"),
+            @Result(property = "status", column = "status"),
+            @Result(property = "adminRemarks", column = "admin_remarks"),
+            @Result(property = "createdTime", column = "created_time"),
+            @Result(property = "changedTime", column = "changed_time")
+    })
+    List<GOrderEntity> queryPartByLabIds(@Param("labIds") String labIds, @Param("status") String status, @Param("start") Integer start);
+
+    @Select("SELECT count(*) FROM `g_order` where `laboratory_id` in (${labIds}) and `status` in (${status})")
+    @Results({
+            @Result(property = "num", column = "count(*)")
+    })
+    int queryNumByLabIds(@Param("labIds") String labIds, @Param("status") String status);
+
+    @Update("UPDATE `g_order` SET admin_remarks=#{adminRemarks}, status=#{status} WHERE `id` = #{orderId}")
+    void adminReviewById(@Param("orderId") String orderId, @Param("adminRemarks") String adminRemarks, @Param("status") int status);
 }

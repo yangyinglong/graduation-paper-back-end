@@ -12,4 +12,7 @@ public interface IAuthorizeView {
     UserRespDto getUserRespDto(GUserEntity userEntityRegister);
 
     Session createSession();
+
+    GUserEntity getAdminEntity(RegisterRestDto registerRestDto);
+
 }

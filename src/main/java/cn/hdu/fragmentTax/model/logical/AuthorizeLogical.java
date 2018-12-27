@@ -96,4 +96,9 @@ public class AuthorizeLogical implements IAuthorizeLogical{
         transport.sendMessage(message, message.getAllRecipients());
         transport.close();
     }
+
+    @Override
+    public void updateToAdmin(GUserEntity userEntity) {
+        userMapper.updateToAdmin(userEntity.getId());
+    }
 }

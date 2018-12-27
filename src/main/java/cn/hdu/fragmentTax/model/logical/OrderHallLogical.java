@@ -106,6 +106,72 @@ public class OrderHallLogical implements IOrderHallLogical {
         transport.close();
     }
 
+    // 管理员管理预约自己实验室的订单
+    @Override
+    public List<OrderRespDto> getAdminOrderDtos(ShowOrderRestDto showOrderRestDto) {
+        List<GLaboratoryEntity> laboratoryEntities = laboratoryMapper.queryByAdminId(showOrderRestDto.getUserId());
+        if (FormatUtil.isEmpty(laboratoryEntities)) {
+            return null;
+        }
+        String[] labIdArr = new String[laboratoryEntities.size()];
+        int index = 0;
+        for (GLaboratoryEntity laboratoryEntity : laboratoryEntities) {
+            labIdArr[index] = laboratoryEntity.getId();
+            index ++;
+        }
+        String labIds = FormatUtil.strings2String(labIdArr);
+        String status = FormatUtil.strings2String(getIntAuditStatus(showOrderRestDto.getStatus()));
+        List<OrderRespDto> orderRespDtos = new ArrayList<OrderRespDto>();
+        List<GOrderEntity> orderEntities = orderMapper.queryPartByLabIds(labIds, status, (showOrderRestDto.getPage()-1)*5);
+        for (GOrderEntity orderEntity : orderEntities) {
+            OrderRespDto orderRespDto = new OrderRespDto();
+            GLaboratoryEntity laboratoryEntity = laboratoryMapper.queryByKey(orderEntity.getLaboratoryId());
+            orderRespDto.setOrderId(orderEntity.getId());
+            orderRespDto.setDate(orderEntity.getCreatedTime().split(" ")[0]);
+            orderRespDto.setLabId(laboratoryEntity.getId());
+            orderRespDto.setLabName(laboratoryEntity.getName());
+            orderRespDto.setLabAddress(laboratoryEntity.getAdress());
+            orderRespDto.setAdminId(laboratoryEntity.getAdminId());
+            orderRespDto.setAdminName(userMapper.queryByKey(orderRespDto.getAdminId()).getName());
+            orderRespDto.setUserId(orderEntity.getUserId());
+            orderRespDto.setUserName(orderEntity.getUserName());
+            orderRespDto.setTime(orderEntity.getBespeakStartTime() + " - " + orderEntity.getBespeakEndTime());
+            orderRespDto.setUsedTo(orderEntity.getUsedTo());
+            orderRespDto.setRemarks(orderEntity.getRemarks());
+            orderRespDto.setStatus(getStrAuditStatus(orderEntity.getStatus()));
+            orderRespDto.setAdminRemarks(orderEntity.getAdminRemarks());
+            orderRespDtos.add(orderRespDto);
+        }
+        return orderRespDtos;
+    }
+
+    @Override
+    public int getAdminOrderEntitiesNum(ShowOrderRestDto showOrderRestDto) {
+        List<GLaboratoryEntity> laboratoryEntities = laboratoryMapper.queryByAdminId(showOrderRestDto.getUserId());
+        if (FormatUtil.isEmpty(laboratoryEntities)) {
+            return 0;
+        }
+        String[] labIdArr = new String[laboratoryEntities.size()];
+        int index = 0;
+        for (GLaboratoryEntity laboratoryEntity : laboratoryEntities) {
+            labIdArr[index] = laboratoryEntity.getId();
+            index ++;
+        }
+        String labIds = FormatUtil.strings2String(labIdArr);
+        String status = FormatUtil.strings2String(getIntAuditStatus(showOrderRestDto.getStatus()));
+        int num = orderMapper.queryNumByLabIds(labIds, status);
+        return num;
+    }
+
+    @Override
+    public void reviewOrder(ReviewOrderRestDto reviewOrderRestDto) {
+        int status = 2;
+        if (reviewOrderRestDto.getReview().equals("驳回")) {
+            status = 3;
+        }
+        orderMapper.adminReviewById(reviewOrderRestDto.getOrderId(), reviewOrderRestDto.getAdminRemarks(), status);
+    }
+
     // todo 通过enum 改写
     //0-已删除 1-待审核  2-已通过  3-已驳回 4-已完成
     private String[] getIntAuditStatus(String[] auditStatus) {

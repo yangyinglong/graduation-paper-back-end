@@ -24,4 +24,10 @@ public interface IOrderHallLogical {
     void cancelOrder(String orderId);
 
     void sendEmail(Session session, SendEmailRestDto sendEmailRestDto) throws Exception;
+
+    List<OrderRespDto> getAdminOrderDtos(ShowOrderRestDto showOrderRestDto);
+
+    int getAdminOrderEntitiesNum(ShowOrderRestDto showOrderRestDto);
+
+    void reviewOrder(ReviewOrderRestDto reviewOrderRestDto);
 }

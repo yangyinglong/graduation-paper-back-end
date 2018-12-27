@@ -4,6 +4,7 @@ public class RegisterRestDto {
     private String name;
     private String id;
     private String phone;
+    private String eMail;
     private String password;
     private String validateCode;
     private String validateCodeId;
@@ -11,13 +12,22 @@ public class RegisterRestDto {
     public RegisterRestDto() {
     }
 
-    public RegisterRestDto(String name, String id, String phone, String password, String validateCode, String validateCodeId) {
+    public RegisterRestDto(String name, String id, String phone, String eMail, String password, String validateCode, String validateCodeId) {
         this.name = name;
         this.id = id;
         this.phone = phone;
+        this.eMail = eMail;
         this.password = password;
         this.validateCode = validateCode;
         this.validateCodeId = validateCodeId;
+    }
+
+    public String geteMail() {
+        return eMail;
+    }
+
+    public void seteMail(String eMail) {
+        this.eMail = eMail;
     }
 
     public String getValidateCode() {

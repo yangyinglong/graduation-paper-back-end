@@ -19,4 +19,6 @@ public interface IAuthorizeLogical {
 
     void editUser(EditUserRestDto editUserRestDto);
     void sendEmail(Session session, SendEmailRestDto sendEmailRestDto) throws Exception;
+
+    void updateToAdmin(GUserEntity userEntity);
 }

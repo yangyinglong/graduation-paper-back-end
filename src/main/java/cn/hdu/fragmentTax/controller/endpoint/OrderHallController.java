@@ -1,9 +1,6 @@
 package cn.hdu.fragmentTax.controller.endpoint;
 
-
 import cn.hdu.fragmentTax.dto.request.*;
-import cn.hdu.fragmentTax.dto.response.OrderBespeakRespDto;
-import cn.hdu.fragmentTax.dto.response.OrderRespDto;
 import cn.hdu.fragmentTax.model.logical.IOrderHallLogical;
 import cn.hdu.fragmentTax.model.view.IOrderHallView;
 import cn.hdu.fragmentTax.util.FormatUtil;
@@ -18,7 +15,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.text.ParseException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -91,11 +87,9 @@ public class OrderHallController {
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, Object> showOrder(ShowOrderRestDto showOrderRestDto){
         Map<String, Object> resp = new HashMap<>();
-        List<OrderRespDto> orderRespDtos = null;
         try {
-            orderRespDtos = orderHallLogical.getOrderRespDtos(showOrderRestDto);
             resp.put("c", 200);
-            resp.put("r", orderRespDtos);
+            resp.put("r", orderHallLogical.getOrderRespDtos(showOrderRestDto));
         } catch ( Exception e) {
             resp.put("c", 300);
             resp.put("r", null);
@@ -120,9 +114,8 @@ public class OrderHallController {
     public Map<String, Object> showOrderBespeakTime(ShowOrderBespeakRestDto showOrderBespeakRestDto) {
         Map<String, Object> resp = new HashMap<>();
         try {
-            List<OrderBespeakRespDto> orderBespeakRespDtos = orderHallLogical.getOrderBespeakRespDtos(showOrderBespeakRestDto);
             resp.put("c", 200);
-            resp.put("r", orderBespeakRespDtos);
+            resp.put("r", orderHallLogical.getOrderBespeakRespDtos(showOrderBespeakRestDto));
         } catch (ParseException e) {
             resp.put("c", 300);
             resp.put("r", "查找失败！");
@@ -146,4 +139,44 @@ public class OrderHallController {
         return resp;
     }
 
+    @Path("/adminShowOrder")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, Object> adminShowOrder(ShowOrderRestDto showOrderRestDto) {
+        Map<String, Object> resp = new HashMap<>();
+        try {
+            resp.put("c", 200);
+            resp.put("r", orderHallLogical.getAdminOrderDtos(showOrderRestDto));
+        } catch (Exception e) {
+            resp.put("c", 300);
+            resp.put("r", "查询失败！");
+        }
+        return resp;
+    }
+
+    @Path("/adminShowOrderNum")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, Object> adminShowOrderNum(ShowOrderRestDto showOrderRestDto) {
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("c", 200);
+        resp.put("r", orderHallLogical.getAdminOrderEntitiesNum(showOrderRestDto));
+        return resp;
+    }
+
+    @Path("/adminReviewOrder")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, Object> adminReviewOrder(ReviewOrderRestDto reviewOrderRestDto) {
+        Map<String, Object> resp = new HashMap<>();
+        try {
+            orderHallLogical.reviewOrder(reviewOrderRestDto);
+            resp.put("c", 200);
+            resp.put("r", "已审核！");
+        } catch (Exception e) {
+            resp.put("c", 300);
+            resp.put("r", "审核出错！");
+        }
+        return resp;
+    }
 }

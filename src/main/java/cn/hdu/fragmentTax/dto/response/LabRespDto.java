@@ -6,6 +6,7 @@ public class LabRespDto {
     private String address;
     private String adminId;
     private String adminName;
+    private String status;
     private String openTime;
     private String desc;
 
@@ -20,6 +21,14 @@ public class LabRespDto {
         this.adminName = adminName;
         this.openTime = openTime;
         this.desc = desc;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getId() {
